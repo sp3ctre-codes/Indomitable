@@ -263,35 +263,34 @@ const ProductCard = ({ product }) => (
 
           <div className="bg-[#151515] border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
             <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
-              Education
+              YEARS OF WORK
             </span>
 
             <h3 className="lg:text-3xl text-3xl font-black tracking-tight lg:my-5 my-2">
-              Moringa School
+              5+ Years of Craft & Growth
             </h3>
 
             <p className="text-sm tracking-widest text-gray-400 mt-1">
-              Junior Software Engineer
+              Your Trusted Clothing Apparel 
             </p>
             <p className="text-sm text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              Feb 2025 – Jul 2025
+              Since 2021
             </p>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              The Challenge
+              THE CHALLENGE
             </h4>
             <p className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-3">
-              The software development curriculum needed modernization to prepare
-              students for real-world engineering challenges.
+              Turning ideas into apparel people actually live in—not just wear once.
             </p>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              What I Did
+              Work Done in 5yrs
             </h4>
             <ul className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              <li>• Learnt how to be a problem solver using codes</li>
-              <li>• Integrated debugging & UI/UX principles</li>
-              <li>• Applied Agile workflows</li>
+              <li>• 0ur brand has been steadily building—not chasing hype, but earning trust</li>
+              <li>• We’ve refined our craft, studied our community, and evolved with culture instead of copying it.</li>
+              <li>• Applied real fedback from our customers to better our services</li>
             </ul>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-3">
@@ -299,12 +298,12 @@ const ProductCard = ({ product }) => (
             </h4>
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">40%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Practical Skills</p>
+                <p className="text-teal-400 text-xl font-semibold">80%</p>
+                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Brand Consistency</p>
               </div>
               <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">60%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Problem Solving</p>
+                <p className="text-teal-400 text-xl font-semibold">20%</p>
+                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Continous Evolution</p>
               </div>
             </div>
 
@@ -322,35 +321,34 @@ const ProductCard = ({ product }) => (
 
           <div className="bg-[#151515] border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
             <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
-              Education
+              EXPERIENCE
             </span>
 
             <h3 className="lg:text-3xl text-3xl font-black tracking-tight lg:my-5 my-2">
-              Moringa School
+              INDOMITABLE BOUTIQUE
             </h3>
 
             <p className="text-sm tracking-widest text-gray-400 mt-1">
-              Junior Software Engineer
+              Crafted Apparel & Design Expertise
             </p>
             <p className="text-sm text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              Feb 2025 – Jul 2025
+              Refined Over 5+ Years
             </p>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
               The Challenge
             </h4>
             <p className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-3">
-              The software development curriculum needed modernization to prepare
-              students for real-world engineering challenges.
+              Perfecting fit, fabric, and design in a space where trends change fast but quality is often ignored.
             </p>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              What I Did
+              What We Did
             </h4>
             <ul className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              <li>• Learnt how to be a problem solver using codes</li>
-              <li>• Integrated debugging & UI/UX principles</li>
-              <li>• Applied Agile workflows</li>
+              <li>• Learnt how to be the best</li>
+              <li>• Created a friendly and mutual relation with our customers</li>
+              <li>• Reliable customer Services</li>
             </ul>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-3">
@@ -358,17 +356,17 @@ const ProductCard = ({ product }) => (
             </h4>
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">40%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Practical Skills</p>
+                <p className="text-teal-400 text-xl font-semibold">70%</p>
+                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Material & Fit Mastery</p>
               </div>
               <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">60%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Problem Solving</p>
+                <p className="text-teal-400 text-xl font-semibold">30%</p>
+                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Design Innovation</p>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-2">
-              {["React", "Node", "Python", "Django", "JavaScript", "Git"].map((tech) => (
+              {["Design", "Fit", "Refined", "Mutual"].map((tech) => (
                 <span
                   key={tech}
                   className="px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300"
@@ -381,30 +379,28 @@ const ProductCard = ({ product }) => (
 
           <div className="bg-[#151515] border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
             <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
-              Skills
+              MISSION
             </span>
 
             <h3 className="lg:text-3xl text-3xl font-black tracking-tight lg:my-5 my-2">
-              What I Work With
+              More Than Just Fashion
             </h3>
             <p className="text-sm tracking-widest text-gray-400 mt-1">
-              Junior Software Engineer
+              Purpose-Driven Clothing Apparel
             </p>
             <p className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-               Solid at building modern UIs with React, Next.js, and Tailwind CSS.
-               I care about layout, spacing, and flow — not just “does it work”, but “does it feel right”.
+               Our mission is simple: create clothing that feels authentic, looks effortless, and holds meaning beyond trends. For people who move with purpose—those who want to express confidence, 
+               identity, and individuality without trying too hard. We’re here to make apparel 
+               that speaks quietly but carries weight.
             </p>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              Skills I Work With
+              Attributes
             </h4>
             <ul className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              <li>• JavaScript Fundamentals</li>
-              <li>• UI implimentations & Design Sense</li>
-              <li>• Debugging & Problem Solving</li>
-              <li>• Version Control (Git & GitHub)</li>
-              <li>• Real-World Problem Translation</li>
-              <li>• Feedback-Friendly</li>
+              <li>• Quality First</li>
+              <li>• Authenticity</li>
+              <li>• Self-Expression</li>
             </ul>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-3">
@@ -412,8 +408,12 @@ const ProductCard = ({ product }) => (
             </h4>
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">100%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Practical Skills</p>
+                <p className="text-teal-400 text-xl font-semibold">60%</p>
+                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Community & Identity</p>
+              </div>
+              <div className="border border-teal-400 rounded-xl p-4 text-center">
+                <p className="text-teal-400 text-xl font-semibold">40%</p>
+                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Creative Expression</p>
               </div>
             </div>
           </div>
