@@ -1,20 +1,62 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import Home from "../components/Home";
 import { Helmet } from "react-helmet";
 
-function HomePage() {
+const AnimatedScrollWrapper = ({ children }) => {
+  const containerRef = useRef();
+  const [visibleItems, setVisibleItems] = useState([]);
 
+  useEffect(() => {
+    const nodes = Array.from(containerRef.current.children);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = nodes.indexOf(entry.target);
+            setVisibleItems((prev) => [...new Set([...prev, idx])]);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    nodes.forEach((node) => observer.observe(node));
+
+    return () => nodes.forEach((node) => observer.unobserve(node));
+  }, [children]);
+
+  return (
+    <div ref={containerRef}>
+      {React.Children.map(children, (child, idx) => (
+        <div
+          style={{ transitionDelay: `${idx * 150}ms` }}
+          className={`transform transition-all duration-700 ease-out ${
+            visibleItems.includes(idx)
+              ? "opacity-100 translate-y-0 scale-100 blur-0"
+              : "opacity-0 translate-y-10 scale-95 blur-sm"
+          }`}
+        >
+          {child}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Mkurugenzi</title>
+        <title>Indomitable Boutique</title>
       </Helmet>
-      <div className="min-h-screen bg-white text-black dark:text-white">
-        <Home />
+      <div className="bg-wrapper">
+        <AnimatedScrollWrapper>
+          <Home />
+        </AnimatedScrollWrapper>
       </div>
     </>
   );
 }
 
 export default HomePage;
-

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 
 const locations = [
   { name: "Isebania", price: 740.0 },
@@ -154,8 +155,8 @@ const Checkout = ({ onCompleteOrder }) => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
-          <h2 className="text-xl font-serif text-[#900000] mb-4">Your cart is empty</h2>
-          <button onClick={() => navigate("/")} className="px-4 py-2 bg-[#900000] text-white rounded hover:bg-red-700">
+          <h2 className="text-xl font-serif text-black mb-4">Please select items before checking out!</h2>
+          <button onClick={() => navigate("/")} className="px-4 py-2 border bg-white text-black hover:text-white rounded hover:bg-black">
             Back to Home
           </button>
         </div>
@@ -166,17 +167,19 @@ const Checkout = ({ onCompleteOrder }) => {
   return (
     <div className="min-h-screen flex items-start justify-center bg-gray-100 py-12 px-4">
       <div className="w-full sm:max-w-md bg-white mt-10 rounded-lg shadow-lg p-6 font-serif">
-        <button onClick={() => navigate("/")} className="flex items-center text-[#900000] hover:text-red-700 transition text-sm mb-4">
+        <button onClick={() => navigate("/")} className="flex items-center text-gray-600 hover:text-black transition text-md mb-4">
           <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
           Back to Home
         </button>
 
-        <h1 className="text-2xl font-bold text-center text-[#900000] mb-6">Mkurugenzi Merche</h1>
+        <h1 className="text-2xl font-bold text-center text-black mb-6">Idomitable Boutique</h1>
 
         <div className="mb-4">
-          <h2 className="text-lg font-semibold text-[#900000]">Your Items</h2>
+          <h2 className="text-lg font-semibold text-black">
+            Your Items
+          </h2>
             {cartItems.map((item, index) => (
               <div key={index} className="mb-2 text-sm text-gray-700">
                 {item.title} × {item.quantity} 
@@ -189,14 +192,13 @@ const Checkout = ({ onCompleteOrder }) => {
                 </span>
               </div>
             ))}
-
         </div>
 
         <div className="mb-6">
-          <label htmlFor="location" className="block text-[#900000] mb-1">
+          <label htmlFor="location" className="block text-black mb-1">
             Select Delivery Location:
           </label>
-          <select id="location" value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)} className="w-full border border-[#900000] rounded-md p-2 text-[#900000] bg-white">
+          <select id="location" value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)} className="w-full border rounded-md p-2 text-gray-600 bg-white">
             <option value="">-- Select a location --</option>
             {locations.map((loc, idx) => (
               <option key={idx} value={loc.name}>
@@ -206,32 +208,32 @@ const Checkout = ({ onCompleteOrder }) => {
           </select>
         </div>
 
-        <div className="border-t pt-4 mb-6 text-sm text-gray-700">
-          <h3 className="text-[#900000] font-semibold mb-2">Order Summary</h3>
-          <div className="flex justify-between mb-1">
+        <div className="border-t pt-4 mb-6 text-sm text-gray-400">
+          <h3 className="text-black font-semibold mb-2">Order Summary</h3>
+          <div className="flex justify-between text-black mb-1">
             <span>Items:</span>
             <span>{totalItems}</span>
           </div>
-          <div className="flex justify-between mb-1">
+          <div className="flex justify-between text-black mb-1">
             <span>Subtotal:</span>
             <span>Ksh {subtotal.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between mb-1">
+          <div className="flex justify-between text-black mb-1">
             <span>Shipping:</span>
             <span>Ksh {shippingCost().toFixed(2)}</span>
           </div>
-          <div className="flex justify-between font-bold text-base">
+          <div className="flex justify-between text-black font-bold text-base">
             <span>Total:</span>
             <span>Ksh {total.toFixed(2)}</span>
           </div>
         </div>
 
         <button onClick={() => onCompleteOrder && selectedLocation && onCompleteOrder({ cartItems, selectedLocation, total })}
-         disabled={!selectedLocation || cartItems.length === 0} className="w-full bg-[#900000] text-white font-semibold py-2 rounded-md hover:bg-red-700 transition mb-2">
+         disabled={!selectedLocation || cartItems.length === 0} className="w-full bg-white text-black font-semibold py-2 rounded-md hover:bg-black hover:text-white border transition mb-2">
           Complete Order
         </button>
 
-        <button onClick={() => navigate("/")} className="w-full text-[#900000] py-2 rounded-md border border-[#800000] transition text-sm">
+        <button onClick={() => navigate("/")} className="w-full text-[#900000] font-bold py-2">
           Cancel Order
         </button>
       </div>

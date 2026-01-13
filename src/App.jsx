@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import HomePage from "../Pages/HomePage";
+import HomePage from "../pages/HomePage";
 import Footer from "../components/Footer";
 import Auth from "../components/Auth";
 import Navbar from "../components/Navbar";
 import Cart from "../components/Cart";
-import GenericModal from "../components/GenericModal";
 import Notifications from "../components/Notifications";
-import CheckoutPage from "../Pages/Checkoutpage";
+import CheckoutPage from "../pages/Checkoutpage";
 import { auth } from "./Firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import AboutPage from "../pages/AboutPage";
 
 function App() {
   const [userType, setUserType] = useState(null);
@@ -82,18 +82,87 @@ function App() {
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const menProducts = [
-    { image: "/BlackHoodie.webp", title: "BeigeHoodie", price: 1500 },
-    { image: "/shat.webp", title: "Hoodie", price: 2500 },
-    { image: "/BlackHoodie.webp", title: "BeigeHoodie", price: 1500 },
-    { image: "/shat.webp", title: "Hoodie", price: 2500 },
-    { image: "/BlackHoodie.webp", title: "BeigeHoodie", price: 1500 },
-    { image: "/shat.webp", title: "Hoodie", price: 2500 },
-    { image: "/BlackHoodie.webp", title: "BeigeHoodie", price: 1500 },
-    { image: "/shat.webp", title: "Hoodie", price: 2500 },
-    { image: "/BlackHoodie.webp", title: "BeigeHoodie", price: 1500 },
-    { image: "/shat.webp", title: "Hoodie", price: 2500 },
-    { image: "/BlackHoodie.webp", title: "BeigeHoodie", price: 1500 },
-    { image: "/shat.webp", title: "Hoodie", price: 2500 },
+     {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
+  {
+    name: "Men's Timberland Classic Premium",
+    price: 4499,
+    image: "/fullneck.avif",
+  },
   ];
 
   const womenProducts = [
@@ -108,38 +177,9 @@ function App() {
 
   const allProducts = [...menProducts, ...womenProducts, ...unisexProducts];
 
-  const switchModal = (type) => {
-    setModalType(null);
-    setTimeout(() => setModalType(type), 150);
-  };
 
-  const getCurrentModalProps = () => {
-    switch (modalType) {
-      case "men":
-        return {
-          title: "Men's Collection",
-          products: menProducts,
-          onSwitchToWomen: () => switchModal("women"),
-          onSwitchToUnisex: () => switchModal("unisex"),
-        };
-      case "women":
-        return {
-          title: "Women's Collection",
-          products: womenProducts,
-          onSwitchToMen: () => switchModal("men"),
-          onSwitchToUnisex: () => switchModal("unisex"),
-        };
-      case "unisex":
-        return {
-          title: "Unisex Collection",
-          products: unisexProducts,
-          onSwitchToMen: () => switchModal("men"),
-          onSwitchToWomen: () => switchModal("women"),
-        };
-      default:
-        return null;
-    }
-  };
+
+ 
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -148,18 +188,16 @@ function App() {
       return;
     }
 
-    if (cartItems.length === 0) {
-      alert("Your cart is empty.");
-      return;
-    }
+    // if (cartItems.length === 0) {
+    //   alert("Your cart is empty.");
+    //   return;
+    // }
 
     navigate("/checkoutpage", { state: { cartItems } });
   };
 
-  const currentModalProps = getCurrentModalProps();
-
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="bg-[#0D1102] text-white">
       <Navbar onOpenAuth={() => setShowAuthModal(true)} onOpenCart={() => setShowCart(true)} onOpenUnisex={() => setModalType("unisex")} onOpenMen={() => setModalType("men")}
         onOpenWomen={() => setModalType("women")} onOpenNotifications={() => setShowNotifications(true)} cartItemCount={totalCartCount} onCheckout={handleCheckout}
         isAuthenticated={isAuthenticated} onLogout={logout} products={allProducts} onAddToCart={addToCart} cartItems={cartItems}/>
@@ -179,16 +217,11 @@ function App() {
         <Notifications onClose={() => setShowNotifications(false)} isAuthenticated={isAuthenticated} messages={notificationMessages}/>
       )}
 
-      {currentModalProps && (
-        <GenericModal
-          {...currentModalProps} onClose={() => setModalType(null)} onAddToCart={addToCart} isAuthenticated={isAuthenticated} onShowAuthModal={() => setShowAuthModal(true)}
-          cartItems={cartItems} onRemoveFromCart={removeFromCart} onUpdateCartQuantity={updateCartQuantity}  onOpenCart={() => setShowCart(true)}/>
-      )}
-
 
       <Routes>
         <Route path="/" element={<HomePage onOpenUnisex={() => setModalType("unisex")} />} />
         <Route path="/checkoutpage" element={<CheckoutPage cartItems={cartItems} />} />
+        <Route path="/aboutpage" element={ <AboutPage/> } />
       </Routes>
 
       {showToast && (
