@@ -1,4 +1,5 @@
-import React from "react";
+import React,{ useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaInstagram, FaFacebook, FaTiktok, FaEnvelope, FaPhone, FaCreditCard } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -13,7 +14,55 @@ const products = [
   { img:"/boxers.webp", name: "Footwear - Casual Sneakers", price: 3499 },
 ];
 
-function HomePage() {
+function HomePage(){
+  const [visible, setVisible] = useState(false);
+  const [quantities, setQuantities] = useState({});
+  const [selectedSizes, setSelectedSizes] = useState({});
+  const [previewImage, setPreviewImage] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setTimeout(() => setVisible(true), 10);
+  }, []);
+
+  const handleClose = (callback) => {
+    setVisible(false);
+    setTimeout(() => {
+      if (callback) callback();
+    }, 200);
+  };
+
+  const handleQuantityChange = (index, delta) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [index]: Math.max(0, (prev[index] || 0) + delta),
+    }));
+  };
+
+  const handleSizeChange = (index, size) => {
+    setSelectedSizes((prev) => ({
+      ...prev,
+      [index]: size,
+    }));
+  };
+
+  const handleShare = async (product) => {
+    const shareData = {
+      title: product.title,
+      text: `Check out this item: ${product.title}`,
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${product.title} - ${window.location.href}`);
+        alert("Link copied to clipboard!");
+      }
+    } catch (err) {
+      alert("Unable to share.");
+    }
+  };
   const products = [
   {
     id: 1,
@@ -97,24 +146,6 @@ function HomePage() {
     reviews: 3,
   },
   {
-    id: 4,
-    name: "4 in 1 Women Handbag",
-    image: "/images/bag.jpg",
-    discount: "-54%",
-    oldPrice: "Ksh 2,849.00",
-    price: "Ksh 1,299.00",
-    reviews: 3,
-  },
-  {
-    id: 5,
-    name: "Nike Air Force 1 (White)",
-    image: "/images/airforce.jpg",
-    discount: "-36%",
-    oldPrice: "Ksh 3,750.00",
-    price: "Ksh 2,399.00",
-    reviews: 2,
-  },
-  {
     id: 6,
     name: "Fashionable Beach Sandals",
     image: "/images/sandals.jpg",
@@ -151,12 +182,48 @@ function HomePage() {
     reviews: 3,
   },
   {
-    id: 4,
-    name: "4 in 1 Women Handbag",
-    image: "/images/bag.jpg",
-    discount: "-54%",
-    oldPrice: "Ksh 2,849.00",
-    price: "Ksh 1,299.00",
+    id: 3,
+    name: "VICTAN White Standard Men’s",
+    image: "/images/tissue.jpg",
+    discount: "-46%",
+    oldPrice: "Ksh 920.00",
+    price: "Ksh 499.00",
+    reviews: 3,
+  },
+  {
+    id: 6,
+    name: "Fashionable Beach Sandals",
+    image: "/images/sandals.jpg",
+    discount: "-41%",
+    oldPrice: "Ksh 1,650.00",
+    price: "Ksh 979.00",
+    reviews: 1,
+  },
+  {
+    id: 1,
+    name: "Men’s Loafers Rubber Shoes",
+    image: "/images/shoe1.jpg",
+    discount: "-70%",
+    oldPrice: "Ksh 4,990.00",
+    price: "Ksh 1,480.00",
+    reviews: 1,
+  },
+  {
+    id: 2,
+    name: "Body Soft Bathing Scrubber",
+    image: "/images/scrubber.jpg",
+    discount: "-60%",
+    oldPrice: "Ksh 150.00",
+    price: "Ksh 60.00",
+    reviews: 1,
+  },
+  {
+    id: 3,
+    name: "VICTAN White Standard Men’s",
+    image: "/images/tissue.jpg",
+    discount: "-46%",
+    oldPrice: "Ksh 920.00",
+    price: "Ksh 499.00",
     reviews: 3,
   },
 ];
@@ -199,6 +266,7 @@ const ProductCard = ({ product }) => (
 );
 
   return (
+    <>
      <main className="min-h-screen text-white">
       <section className="relative px-6 md:px-16 mb-1 py-44">
         <div className="justify-center text-center items-center max-w-5xl mx-auto">
@@ -219,24 +287,57 @@ const ProductCard = ({ product }) => (
           </p>
         </div>
       </section>
+           <section className="text-white py-8 px-6">
+  <div className="max-w-7xl mx-auto">
+    <h2 className="text-3xl md:text-4xl text-center font-black tracking-tight mb-8">
+      What we <span className="text-teal-400">Sell</span>
+    </h2>
 
-      <section className="text-white py-8 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl text-center font-black tracking-tight mb-2">
-            What we <span className="text-teal-400">Sell</span>
-          </h2>
-          <section className="max-w-8xl w-full mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </section>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {products.map((product, index) => (
+        <div
+          key={`${product.id}-${index}`}
+          className="bg-white border rounded-xl shadow p-4 flex flex-col relative"
+        >
+          {/* Image Container */}
+          <div className="relative">
+            <img
+              src={product.image}
+              alt={product.name}
+              onClick={() =>
+                setPreviewImage(previewImage === index ? null : index)
+              }
+              className="w-full h-48 object-cover rounded-md mb-2 hover:scale-105 transition-transform duration-300 cursor-pointer"
+            />
+
+            {/* Hovering Preview */}
+            {previewImage === index && (
+              <img
+                src={product.image}
+                alt="Preview"
+                className="absolute -top-6 left-1/2 transform -translate-x-1/2 scale-130 z-50 rounded-lg shadow-lg border-4 border-white transition-all duration-200 cursor-pointer"
+                onClick={() => setPreviewImage(null)}
+              />
+            )}
+          </div>
+
+          <div className="flex justify-between items-center mb-1">
+            <h3 className="text-black/50 text-lg font-medium">
+              {product.name}
+            </h3>
+          </div>
+
+          <p className="text-black/50 mb-2">KES {product.price}</p>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
+
+
 
       <section className="relative px-6 md:px-16 py-24">
-        <h2 className="text-center text-3xl text-white font-black tracking-tight mb-24">
+        <h2 className="text-center text-3xl text-black/80 font-black tracking-tight mb-24">
           <span className="text-teal-400">Learn More </span> About Us
         </h2>
 
@@ -261,7 +362,7 @@ const ProductCard = ({ product }) => (
             </div>
           </div>
 
-          <div className="bg-[#151515] border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
+          <div className="bg-gradient-to-l from-black/50 to-black/30 border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
             <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
               YEARS OF WORK
             </span>
@@ -290,7 +391,7 @@ const ProductCard = ({ product }) => (
             <ul className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
               <li>• 0ur brand has been steadily building—not chasing hype, but earning trust</li>
               <li>• We’ve refined our craft, studied our community, and evolved with culture instead of copying it.</li>
-              <li>• Applied real fedback from our customers to better our services</li>
+              <li>• Applied real feedback from our customers to better our services</li>
             </ul>
 
             <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-3">
@@ -319,7 +420,7 @@ const ProductCard = ({ product }) => (
             </div>
           </div>
 
-          <div className="bg-[#151515] border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
+          <div className="bg-gradient-to-r from-black/50 to-black/30 border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
             <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
               EXPERIENCE
             </span>
@@ -377,7 +478,7 @@ const ProductCard = ({ product }) => (
             </div>
           </div>
 
-          <div className="bg-[#151515] border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
+          <div className="bg-gradient-to-l from-black/50 to-black/30 border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
             <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
               MISSION
             </span>
@@ -420,6 +521,12 @@ const ProductCard = ({ product }) => (
         </div>
       </section>
     </main>
+      {/* {previewImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setPreviewImage(null)}>
+          <img src={previewImage} alt="Preview" className="max-w-full max-h-full rounded-lg shadow-lg border border-white"/>
+        </div>
+      )} */}
+    </>
   );
 }
 

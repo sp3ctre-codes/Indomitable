@@ -153,10 +153,10 @@ const Checkout = ({ onCompleteOrder }) => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-serif text-black mb-4">Please select items before checking out!</h2>
-          <button onClick={() => navigate("/")} className="px-4 py-2 border bg-white text-black hover:text-white rounded hover:bg-black">
+          <h2 className="text-gray-300 text-lg font-medium text-foreground/90 lg:my-5 my-2 text-md leading-relaxed">Please select items before checking out!</h2>
+          <button onClick={() => navigate("/")} className="border border-teal-400 text-teal-400 px-4 py-2 rounded-md hover:bg-teal-400 hover:text-black transition">
             Back to Home
           </button>
         </div>
@@ -165,7 +165,7 @@ const Checkout = ({ onCompleteOrder }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-start justify-center bg-gray-100 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center py-44 px-4">
       <div className="w-full sm:max-w-md bg-white mt-10 rounded-lg shadow-lg p-6 font-serif">
         <button onClick={() => navigate("/")} className="flex items-center text-gray-600 hover:text-black transition text-md mb-4">
           <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -199,7 +199,7 @@ const Checkout = ({ onCompleteOrder }) => {
             Select Delivery Location:
           </label>
           <select id="location" value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)} className="w-full border rounded-md p-2 text-gray-600 bg-white">
-            <option value="">-- Select a location --</option>
+            <option value="">-- Select location --</option>
             {locations.map((loc, idx) => (
               <option key={idx} value={loc.name}>
                 {loc.name} - Ksh {loc.price.toFixed(2)}

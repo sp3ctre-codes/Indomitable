@@ -2,8 +2,31 @@ import React, { useRef } from "react";
 import emailjs from "emailjs-com";
 import { FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 
-function Footer() {
+function Footer({
+    onOpenMen,
+    onOpenWomen,
+    onOpenUnisex,
+}) {
     const formRef = useRef();
+
+    const footerLabels = [
+        "Men",
+        "Women",
+        "UniSex",
+    ];
+
+    const handleLabelClick = (label) => {
+        switch (label) {
+            case "Men":
+                return onOpenMen?.();
+            case "Women":
+                return onOpenWomen?.();
+            case "UniSex":
+                return onOpenUnisex?.();
+            default:
+                return;   
+        }
+    };
 
     const sendEmail = (e) => {
         e.preventDefault();
@@ -30,17 +53,27 @@ function Footer() {
   return (
         <footer className="relative text-white px-6 md:px-16 pt-16 pb-8">
             <div className="max-w-6xl mx-auto">
-                <div className="h-px bg-gradient-to-r from-transparent via-gray-500/40 to-transparent mb-12 "/>
+                <div className="h-px bg-gradient-to-r from-transparent via-white/50 to-transparent mb-12 "/>
                 <div className="max-w-9xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div>
                         <h3 className="font-bold text-white mb-4 text-2xl">Shop</h3>
-                        <ul className="space-y-2 text-sm">
-                        <li><a href="/men" className="text-gray-200 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2 hover:underline">Men</a></li>
-                        <li><a href="/women" className="text-gray-200 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2 hover:underline">Women</a></li>
-                        <li><a href="/unisex" className="text-gray-200 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2 hover:underline">Unisex</a></li>
-                        <li><a href="/footwear" className="text-gray-200 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2 hover:underline">Footwear</a></li>
-                        <li><a href="/kids" className="text-gray-200 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2 hover:underline">Kids</a></li>
-                        </ul>
+                        
+            {footerLabels.map((label) => (
+              <div
+                key={label}
+                className="relative group"
+              >
+                <button
+                  onClick={() => handleLabelClick(label)}
+                  className="relative text-white font-sans px-3 py-2 rounded-md transition duration-300 font-semibold 
+                  after:content-[''] after:absolute after:left-1/2 after:bottom-0 
+                  after:translate-x-[-50%] after:w-0 after:h-[2px] after:bg-teal-400 
+                  after:transition-all after:duration-500 group-hover:after:w-full"
+                >
+                  {label}
+                </button>
+              </div>
+            ))}
                     </div>
             
                     <div>
@@ -90,7 +123,7 @@ function Footer() {
                     </div>
                 </div>
     
-                <div className="mt-16 text-center text-sm text-gray-400">
+                <div className="mt-16 text-center text-sm text-white">
                     <p>&copy; {new Date().getFullYear()} <a className="hover:underline" href="IndomitableBoutique.com">Indomitable Boutique</a></p>
                 </div>
             </div>

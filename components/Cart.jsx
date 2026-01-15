@@ -33,7 +33,7 @@ export default function Cart({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center">
-      <div className="bg-[#0D1102] text-white p-6 rounded-lg shadow-lg w-[90%] max-w-lg max-h-[80vh] overflow-y-auto relative">
+      <div className="bg-gray-800/20 text-white p-6 rounded-lg shadow-lg w-[90%] max-w-lg max-h-[80vh] overflow-y-auto relative">
         <div className="flex justify-between items-center mb-4">
           <h2 className="lg:text-2xl text-2xl font-black tracking-tight lg:my-5 my-2">Your Cart</h2>
           <button onClick={onClose} className="text-gray-600 font-serif text-2xl hover:text-white cursor-hand">

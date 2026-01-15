@@ -14,9 +14,12 @@ function Navbar({
   cartItemCount,
   cartItems = [],
   isAuthenticated,
+  onOpenUnisex,
   onLogout,
   products = [],
   onAddToCart,
+  onOpenMen,
+  onOpenWomen,
 }) {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -24,17 +27,8 @@ function Navbar({
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
-  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const navigate = useNavigate();
-
-  // Dropdown categories
-  const dropdowns = {
-    Men: ["Shoes", "Vests", "T-shirts", "Innerwear", "Jackets", "Accessories", "Trousers", "Shirts"],
-    Women: ["Shoes", "Dresses", "Accessories", "Jackets", "T-shirts", "Shirts", "Trousers"],
-    UniSex: ["Shoes", "Jackets", "Beanie Hats", "Jerseys", "Slides", "Hoodies"],
-  };
-
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -70,15 +64,15 @@ function Navbar({
         return onOpenCart?.();
       case "Checkout":
         return onCheckout?.();
+      case "Men":
+        return onOpenMen?.();
+      case "Women":
+        return onOpenWomen?.();
+      case "UniSex":
+        return onOpenUnisex?.();
       default:
         return;
     }
-  };
-
-  const handleDropdownClick = (parent, item) => {
-    console.log(`User selected ${item} under ${parent}`);
-    setActiveDropdown(null);
-    navigate(`/category/${parent.toLowerCase()}/${item.toLowerCase()}`);
   };
 
   const navLabels = [
@@ -101,10 +95,8 @@ function Navbar({
           <h1 className="text-gray-300 text-xl lg:text-2xl text-center font-bold text-foreground/90 text-md leading-relaxed mb-2">Indomitable Boutique</h1>
         </div>
 
-        {/* Desktop Nav */}
         <div className="flex items-center gap-4 ml-auto">
           <nav className="hidden md:flex items-center gap-6">
-            {/* Search */}
             <button
               onClick={() => setShowSearch(!showSearch)}
               className="relative p-2 rounded-md text-white hover:bg-teal-400 transition"
@@ -112,7 +104,6 @@ function Navbar({
               <Search className="w-6 h-6" />
             </button>
 
-            {/* Cart */}
             <button
               onClick={onOpenCart}
               className="relative p-2 rounded-md text-white hover:bg-teal-400 transition"
@@ -125,13 +116,10 @@ function Navbar({
               )}
             </button>
 
-            {/* Labels + Dropdowns */}
             {navLabels.map((label) => (
               <div
                 key={label}
                 className="relative group"
-                onMouseEnter={() => setActiveDropdown(label)}
-                onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
                   onClick={() => handleLabelClick(label)}
@@ -142,21 +130,6 @@ function Navbar({
                 >
                   {label}
                 </button>
-
-                {/* Dropdown menu */}
-                {dropdowns[label] && activeDropdown === label && (
-                  <div className="absolute left-0 top-full mt-2 bg-black/20 backdrop-blur-xl rounded-md py-3 px-6 min-w-[100px] z-50">
-                    {dropdowns[label].map((item, idx) => (
-                      <p
-                        key={idx}
-                        className="px-2 py-1 text-gray-200 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2 hover:underline cursor-pointer transition"
-                        onClick={() => handleDropdownClick(label, item)}
-                      >
-                        {item}
-                      </p>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
           </nav>
@@ -184,7 +157,7 @@ function Navbar({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search products..."
-              className="w-full font-serif border border-gray-300 rounded px-4 py-2"
+              className="lg:text-xl text-xl w-full border border-gray-300 rounded-md px-4 py-2 tracking-tight lg:my-5 my-2"
             />
 
             {filteredResults.length > 0 && (
@@ -224,41 +197,31 @@ function Navbar({
 
       {/* Mobile dropdown menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-md px-4 py-4 space-y-4">
+        <div className="md:hidden bg-black/20 backdrop-blur-sm shadow-md px-4 py-4 space-y-4">
           {navLabels.map((label) => (
             <div key={label}>
               <button
                 onClick={() => handleLabelClick(label)}
-                className="block w-full text-left text-white font-semibold py-2 border-b border-gray-200"
+                className="relative text-white font-sans px-3 py-2 rounded-md transition duration-300 font-semibold 
+                  after:content-[''] after:absolute after:left-1/2 after:bottom-0 
+                  after:translate-x-[-50%] after:w-0 after:h-[2px] after:bg-teal-400 
+                  after:transition-all after:duration-500 group-hover:after:w-full"
               >
                 {label}
               </button>
-              {dropdowns[label] && (
-                <div className="ml-4">
-                  {dropdowns[label].map((item, idx) => (
-                    <p
-                      key={idx}
-                      className="py-1 text-sm text-white hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleDropdownClick(label, item)}
-                    >
-                      {item}
-                    </p>
-                  ))}
-                </div>
-              )}
             </div>
           ))}
           <div className="flex gap-4 mt-2">
             <button
               onClick={() => {
-                onOpenNotifications?.();
+                // onOpenNotifications?.();
                 setMobileMenuOpen(false);
               }}
               className="p-2 text-white hover:bg-gray-200 rounded"
             >
               <ShoppingCart className="w-5 h-5" />
               {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-black/20 backdrop-blur-sm text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                <span className="absolute -top-1 -right-1 bg-teal/20 backdrop-blur-sm text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
                   {cartItemCount}
                 </span>
               )}
