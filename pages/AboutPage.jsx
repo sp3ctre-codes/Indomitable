@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Home from "../components/Home";
+import About from "../components/About";
 import { Helmet } from "react-helmet";
 
 const AnimatedScrollWrapper = ({ children }) => {
@@ -48,11 +48,11 @@ function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Indomitable | Boutique</title>
+        <title>About</title>
       </Helmet>
       <div className="bg-wrapper">
         <AnimatedScrollWrapper>
-          <Home />
+          <About />
         </AnimatedScrollWrapper>
       </div>
     </>

@@ -1,141 +1,141 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
-import { auth, provider } from "../src/Firebase";
+import { motion } from "framer-motion";
+import { X } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook } from "react-icons/fa";  
 
-
-function Authentication({ onClose, onLogin }) {
+export default function Auth({ onClose, loginUser, signupUser, onLogin }) {
   const [authMode, setAuthMode] = useState("signin");
   const [formData, setFormData] = useState({ fullName: "", email: "", password: "" });
   const [showToast, setShowToast] = useState(false);
-
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleAuth = async (e) => {
     e.preventDefault();
+    setError("");
     try {
       if (authMode === "signup") {
-        await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        await signupUser(formData.email, formData.password, formData.fullName);
       } else {
-        await signInWithEmailAndPassword(auth, formData.email, formData.password);
+        await loginUser(formData.email, formData.password);
       }
 
+      onLogin?.(); // update App state immediately
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
-        onLogin?.();
         onClose?.();
         navigate("/");
-      }, 1500);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithPopup(auth, provider);
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        onLogin?.();
-        onClose?.();
-        navigate("/");
-      }, 1500);
-    } catch (error) {
-      alert("Google Sign In failed: " + error.message);
-    }
-  };
-
-  const handleForgotPassword = async () => {
-    if (!formData.email) {
-      alert("Please enter your email to reset your password.");
-      return;
-    }
-
-    try {
-      await sendPasswordResetEmail(auth, formData.email);
-      alert("Password reset email sent!");
-    } catch (error) {
-      alert("Failed to send reset email: " + error.message);
+      }, 800);
+    } catch (err) {
+      setError(err.message || "Authentication failed");
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div className="bg-white/10 w-full max-w-sm rounded-xl shadow-lg p-4 sm:p-6 relative animate-fadeInScale">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h2 className="text-teal-400 text-md tracking-widest uppercase">
-              Indomitable Boutique
-            </h2>
-            <p className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed">Sign in or create an account if you don't have one.</p>
-          </div>
-          <button onClick={onClose} className="text-gray-400 hover:bg-black/30 px-4 py-2 rounded-md cursor-pointer text-xl font-serif hover:text-white">
-            ×
-          </button>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white w-full max-w-[450px] p-8 md:p-10 relative shadow-2xl"
+      >
+        {/* Close Button */}
+        <button 
+          onClick={onClose} 
+          className="absolute top-6 right-6 p-1 hover:bg-gray-100 rounded-full transition-colors"
+        >
+          <X size={24} className="text-black" />
+        </button>
+
+        {/* Brand Header */}
+        <div className="mb-8 text-left">
+          <h2 className="text-2xl font-black uppercase italic tracking-tighter leading-none mb-4">
+            Indomitable Boutique
+          </h2>
+          <h1 className="text-xl font-bold mb-2">
+            {authMode === "signin" ? "YOUR ACCOUNT FOR EVERYTHING" : "BECOME A MEMBER"}
+          </h1>
+          <p className="text-gray-500 text-sm">
+            Enter your email to join us or sign in.
+          </p>
         </div>
 
-        <div className="mb-4">
-          <button onClick={handleGoogleSignIn}
-           className="w-full flex items-center justify-center gap-2 bg-teal-500 py-2 rounded-md shadow-sm hover:bg-teal-400 transition text-black text-md font-medium text-foreground/90 text-md leading-relaxed">
-            <img src="/google.png" alt="Google logo" className="w-5 h-5" />
-            Continue with Google
-          </button>
-        </div>
-
-        <div className="flex items-center mb-4">
-          <div className="flex-grow h-px bg-gradient-to-l from-transparent via-gray-200/20 to-transparent"/>
-          <span className="text-gray-300 text-sm font-medium text-foreground/90 text-md leading-relaxed">or</span>
-          <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-200/20 to-transparent"/>
-        </div>
-
-        <div className="flex gap-2 mb-4 bg-gray-100 p-1 rounded-md">
-          <button className={`flex-1 py-2 text-sm rounded ${ authMode === "signin" ? "bg-teal-400 text-black text-md font-medium text-foreground/90 text-md leading-relaxed" : "text-black font-medium text-foreground/90 text-md leading-relaxed" }`}
-           onClick={() => setAuthMode("signin")}>
-            Sign In
-          </button>
-          <button className={`flex-1 py-2 text-sm rounded ${ authMode === "signup" ? "bg-teal-400 text-black text-md font-medium text-foreground/90 text-md leading-relaxed" : "text-black font-medium text-foreground/90 text-md leading-relaxed" }`}
-           onClick={() => setAuthMode("signup")}>
-            Sign Up
-          </button>
-        </div>
-
-        <form onSubmit={handleAuth} className="space-y-3">
+        {/* Main Form */}
+        <form onSubmit={handleAuth} className="space-y-4">
           {authMode === "signup" && (
-            <input type="text" placeholder="Full Name" className="text-black text-md font-medium text-foreground/90 text-md leading-relaxed w-full px-3 py-2 border rounded-md bg-gray-200 placeholder-gray-white"
-             value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}/>
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:border-black outline-none transition-all placeholder:text-gray-400"
+              value={formData.fullName}
+              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+            />
           )}
 
-          <input type="email" placeholder="Email" className="text-black text-md font-medium text-foreground/90 text-md leading-relaxed w-full px-3 py-2 border rounded-md bg-gray-200 placeholder-gray-white"
-           value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}/>
+          <input
+            type="email"
+            placeholder="Email address"
+            className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:border-black outline-none transition-all placeholder:text-gray-400"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
 
-          <input type="password" placeholder="Password" className="text-black text-md font-medium text-foreground/90 text-md leading-relaxed w-full px-3 py-2 border rounded-md bg-gray-200 placeholder-gray-white mb-2"
-           value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })}/>
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:border-black outline-none transition-all placeholder:text-gray-400"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
 
-          <div className="h-px bg-gradient-to-l from-transparent via-gray-200/20 to-transparent mb-4"/>
+          <p className="text-[11px] text-gray-500 leading-tight">
+            By logging in, you agree to Indomitable's <span className="underline cursor-pointer">Privacy Policy</span> and <span className="underline cursor-pointer">Terms of Use</span>.
+          </p>
 
-          <button type="submit" className="w-full bg-teal-500 hover:bg-teal-400 text-black text-md font-medium text-foreground/90 text-md leading-relaxed py-2 rounded-md">
-            {authMode === "signin" ? "Sign In" : "Sign Up"}
+          <button 
+            type="submit" 
+            className="w-full bg-black text-white py-3 font-bold uppercase tracking-wide hover:bg-zinc-800 transition-colors active:scale-[0.98]"
+          >
+            {authMode === "signin" ? "Sign In" : "Join Us"}
           </button>
         </form>
 
-        {authMode === "signin" && (
-          <div className="mt-2 text-right">
-            <button onClick={handleForgotPassword} className="text-sm text-gray-200 text-md font-medium text-foreground/90 text-md leading-relaxed underline hover:text-white">
-              Forgot Password?
-            </button>
-          </div>
-        )}
-      </div>
+        {error && <p className="text-red-600 text-xs mt-3 font-medium text-center">{error}</p>}
 
+        {/* Divider */}
+        <div className="relative my-8">
+          <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-gray-200"></span></div>
+          <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-400 font-bold">Or continue with</span></div>
+        </div>
+
+        {/* Social Logins */}
+        <div className="grid grid-cols-2 gap-4">
+          <button className="flex items-center justify-center gap-2 border border-gray-300 py-3 rounded-sm hover:border-black transition-colors font-semibold text-sm">
+            <FcGoogle size={20} /> Google
+          </button>
+          <button className="flex items-center justify-center gap-2 border border-gray-300 py-3 rounded-sm hover:border-black transition-colors font-semibold text-sm">
+            <FaFacebook className="text-[#1877F2]" size={20} /> Facebook
+          </button>
+        </div>
+
+        {/* Mode Toggle */}
+        <p className="mt-8 text-center text-sm text-gray-500">
+          {authMode === "signin" ? "Not a Member? " : "Already a Member? "}
+          <button 
+            onClick={() => setAuthMode(authMode === "signin" ? "signup" : "signin")}
+            className="text-black font-bold underline underline-offset-4"
+          >
+            {authMode === "signin" ? "Join Us." : "Sign In."}
+          </button>
+        </p>
+      </motion.div>
       {showToast && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded bg-green-600 text-md font-medium text-foreground/90 leading-relaxed text-white shadow-md text-sm animate-slideInUp">
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded bg-green-600 text-white shadow-md animate-slideInUp">
           Authentication successful! Redirecting...
         </div>
       )}
     </div>
   );
 }
-
-export default Authentication;

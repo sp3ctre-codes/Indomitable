@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
+import { ArrowLeft, CreditCard, Package, Truck } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const locations = [
   { name: "Isebania", price: 740.0 },
@@ -53,7 +54,6 @@ const locations = [
   { name: "Mwala", price: 600.0 },
   { name: "Ogembo", price: 600.0 },
   { name: "Oyugis", price: 600.0 },
-  { name: "Rongo", price: 600.0 },
   { name: "Voi", price: 600.0 },
   { name: "Webuye", price: 600.0 },
   { name: "Wote", price: 600.0 },
@@ -136,8 +136,11 @@ const locations = [
 const Checkout = ({ onCompleteOrder }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const cartItems = location.state?.cartItems || [];
+
   const [selectedLocation, setSelectedLocation] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   const shippingCost = () => {
     const match = locations.find((loc) => loc.name === selectedLocation);
@@ -148,15 +151,20 @@ const Checkout = ({ onCompleteOrder }) => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
   const total = subtotal + shippingCost();
 
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-gray-300 text-lg font-medium text-foreground/90 lg:my-5 my-2 text-md leading-relaxed">Please select items before checking out!</h2>
-          <button onClick={() => navigate("/")} className="border border-teal-400 text-teal-400 px-4 py-2 rounded-md hover:bg-teal-400 hover:text-black transition">
+          <h2 className="text-xl font-medium mt-2 text-black">
+            Please select items before checking out!
+          </h2>
+          <button
+            onClick={() => navigate("/")}
+            className="border bg-black text-white px-4 py-2 rounded-md hover:bg-black/40 transition mt-4"
+          >
             Back to Home
           </button>
         </div>
@@ -164,78 +172,225 @@ const Checkout = ({ onCompleteOrder }) => {
     );
   }
 
+  const handleCompleteOrder = async () => {
+    if (!selectedLocation || !paymentMethod) return;
+
+    if (paymentMethod === "mpesa" && !mpesaNumber) return;
+    if (paymentMethod === "card" && (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvv)) return;
+
+    const response = await fetch("/api/payments/stk", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        cartItems,
+        selectedLocation,
+        paymentMethod,
+        total,
+        phone: mpesaNumber
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert("STK Push sent to your phone");
+    }
+  };
+  const [mpesaNumber, setMpesaNumber] = useState("");
+  const [cardDetails, setCardDetails] = useState({
+    name:"",
+    number: "",
+    expiry: "",
+    cvv: ""
+  });
+
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center py-44 px-4">
-      <div className="w-full sm:max-w-md bg-white mt-10 rounded-lg shadow-lg p-6 font-serif">
-        <button onClick={() => navigate("/")} className="flex items-center text-gray-600 hover:text-black transition text-md mb-4">
-          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Home
-        </button>
+    <div className="min-h-screen bg-white text-black pt-20 pb-16">
+      <div className="max-w-6xl mx-auto px-4 md:px-12">
 
-        <h1 className="text-2xl font-bold text-center text-black mb-6">Idomitable Boutique</h1>
+        <div className="flex items-center justify-between mb-12">
+          <button onClick={() => navigate("/")} className="group flex items-center gap-2 text-sm font-bold uppercase tracking-tight">
+            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            Back
+          </button>
+          <h1 className="text-xl font-black uppercase italic tracking-tighter">Indomitable</h1>
+          <div className="w-10"></div>
+        </div>
 
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-black">
-            Your Items
-          </h2>
-            {cartItems.map((item, index) => (
-              <div key={index} className="mb-2 text-sm text-gray-700">
-                {item.title} × {item.quantity} 
-                <span className="text-gray-600">
-                  {" "}({item.size || "N/A"})
-                </span> 
-                @ Ksh {item.price.toFixed(2)} ={" "}
-                <span className="font-semibold">
-                  Ksh {(item.price * item.quantity).toFixed(2)}
-                </span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+
+          {/* LEFT COLUMN */}
+          <div className="lg:col-span-2 space-y-12">
+
+            <section>
+              <h2 className="text-2xl font-medium mb-6 flex items-center gap-3">
+                <Truck size={24} /> Delivery Options
+              </h2>
+              <div className="space-y-4">
+                <label className="text-xs font-bold uppercase text-gray-500 tracking-widest">Select Location</label>
+                <select
+                  value={selectedLocation}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                  className="w-full border-b-2 border-gray-200 py-4 text-lg focus:border-black outline-none transition-colors bg-transparent appearance-none"
+                >
+                  <option value="">-- Choose City --</option>
+                  {locations.map((loc, idx) => (
+                    <option key={idx} value={loc.name}>
+                      {loc.name} (+Ksh {loc.price})
+                    </option>
+                  ))}
+                </select>
               </div>
-            ))}
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-medium mb-6 flex items-center gap-3">
+                <CreditCard size={24} /> Payment
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                {/* MPESA */}
+                <div 
+                  onClick={() => setPaymentMethod("mpesa")}
+                  className={`border-2 p-6 rounded-xl cursor-pointer transition-all flex flex-col gap-4 ${
+                    paymentMethod === "mpesa" ? "border-black bg-zinc-50" : "border-gray-100 hover:border-gray-300"
+                  }`}
+                >
+                  <span className="font-bold uppercase text-xs tracking-widest">M-Pesa</span>
+                  <p className="text-sm text-gray-500 font-medium leading-tight">
+                    Pay securely via your Safaricom line.
+                  </p>
+
+                  <AnimatePresence>
+                    {paymentMethod === "mpesa" && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="pt-4 border-t"
+                      >
+                        <input
+                          type="tel"
+                          placeholder="Enter M-Pesa Number (07XXXXXXXX)"
+                          value={mpesaNumber}
+                          onChange={(e) => setMpesaNumber(e.target.value)}
+                          className="w-full border-b py-2 outline-none focus:border-black transition-colors"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* CARD */}
+                <div 
+                  onClick={() => setPaymentMethod("card")}
+                  className={`border-2 p-6 rounded-xl cursor-pointer transition-all flex flex-col gap-4 ${
+                    paymentMethod === "card" ? "border-black bg-zinc-50" : "border-gray-100 hover:border-gray-300"
+                  }`}
+                >
+                  <span className="font-bold uppercase text-xs tracking-widest">
+                    Credit or Debit Card
+                  </span>
+
+                  <AnimatePresence>
+                    {paymentMethod === "card" && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="space-y-4 pt-4 border-t"
+                      >
+                        <input
+                          type="text"
+                          placeholder="Cardholder Name"
+                          value={cardDetails.name}
+                          onChange={(e) =>
+                            setCardDetails({ ...cardDetails, name: e.target.value })
+                          }
+                          className="w-full border-b py-2 outline-none focus:border-black transition-colors"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Card Number"
+                          value={cardDetails.number}
+                          onChange={(e) =>
+                            setCardDetails({ ...cardDetails, number: e.target.value })
+                          }
+                          className="w-full border-b py-2 outline-none focus:border-black transition-colors"
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                          <input
+                            type="text"
+                            placeholder="MM/YY"
+                            value={cardDetails.expiry}
+                            onChange={(e) =>
+                              setCardDetails({ ...cardDetails, expiry: e.target.value })
+                            }
+                            className="border-b py-2 outline-none focus:border-black transition-colors"
+                          />
+                          <input
+                            type="text"
+                            placeholder="CVV"
+                            value={cardDetails.cvv}
+                            onChange={(e) =>
+                              setCardDetails({ ...cardDetails, cvv: e.target.value })
+                            }
+                            className="border-b py-2 outline-none focus:border-black transition-colors"
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+              </div>
+            </section>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-28 bg-white space-y-8">
+              <h2 className="text-2xl font-medium mb-6 flex items-center gap-3">
+                <Package size={24} /> Summary
+              </h2>
+
+              <div className="border-t border-b py-6 space-y-3">
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal</span>
+                  <span>Ksh {subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span>{selectedLocation ? `Ksh ${shippingCost().toLocaleString()}` : "—"}</span>
+                </div>
+                <div className="flex justify-between text-black font-bold text-lg pt-2">
+                  <span>Total</span>
+                  <span>Ksh {total.toLocaleString()}</span>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <button
+                  onClick={handleCompleteOrder}
+                  disabled={!paymentMethod}
+                  className="w-full bg-black text-white font-bold py-5 rounded-full hover:bg-zinc-800 transition-all disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed uppercase tracking-widest text-sm"
+                >
+                  Complete Order
+                </button>
+                <button
+                  onClick={() => navigate("/")}
+                  className="w-full text-black font-bold py-2 text-sm underline hover:text-gray-600 transition-colors"
+                >
+                  Cancel and return to shop
+                </button>
+              </div>
+            </div>
+          </div>
+
         </div>
-
-        <div className="mb-6">
-          <label htmlFor="location" className="block text-black mb-1">
-            Select Delivery Location:
-          </label>
-          <select id="location" value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)} className="w-full border rounded-md p-2 text-gray-600 bg-white">
-            <option value="">-- Select location --</option>
-            {locations.map((loc, idx) => (
-              <option key={idx} value={loc.name}>
-                {loc.name} - Ksh {loc.price.toFixed(2)}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="border-t pt-4 mb-6 text-sm text-gray-400">
-          <h3 className="text-black font-semibold mb-2">Order Summary</h3>
-          <div className="flex justify-between text-black mb-1">
-            <span>Items:</span>
-            <span>{totalItems}</span>
-          </div>
-          <div className="flex justify-between text-black mb-1">
-            <span>Subtotal:</span>
-            <span>Ksh {subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-black mb-1">
-            <span>Shipping:</span>
-            <span>Ksh {shippingCost().toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-black font-bold text-base">
-            <span>Total:</span>
-            <span>Ksh {total.toFixed(2)}</span>
-          </div>
-        </div>
-
-        <button onClick={() => onCompleteOrder && selectedLocation && onCompleteOrder({ cartItems, selectedLocation, total })}
-         disabled={!selectedLocation || cartItems.length === 0} className="w-full bg-white text-black font-semibold py-2 rounded-md hover:bg-black hover:text-white border transition mb-2">
-          Complete Order
-        </button>
-
-        <button onClick={() => navigate("/")} className="w-full text-[#900000] font-bold py-2">
-          Cancel Order
-        </button>
       </div>
     </div>
   );

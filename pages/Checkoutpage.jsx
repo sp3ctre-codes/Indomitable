@@ -48,7 +48,7 @@ function CheckoutPage() {
   return (
     <>
       <Helmet>
-        <title>Indomitable Boutique</title>
+        <title>Checkout</title>
       </Helmet>
       <div className="bg-wrapper">
         <AnimatedScrollWrapper>

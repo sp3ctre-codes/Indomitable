@@ -1,191 +1,273 @@
+// App.jsx
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import HomePage from "../Pages/HomePage";
+import ProductPage from "../pages/ProductPage";
+import CategoryFilterPage from "../pages/CategoryFilterPage";
+import HomePage from "../pages/HomePage";
 import Footer from "../components/Footer";
 import Auth from "../components/Auth";
 import Navbar from "../components/Navbar";
 import Cart from "../components/Cart";
-// import AdobeStock from "../public/AdobeStock.jpg";
-import GenericModal from "../components/GenericModal";
-// import Notifications from "../components/Notifications";
+import Favorite from "../components/Favorite";
 import CheckoutPage from "../pages/Checkoutpage";
-import { auth } from "./Firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import AboutPage from "../pages/AboutPage";
+import { menProducts, womenProducts, unisexProducts } from "./data/Products";
+import MenPage from "../pages/MenPage";
+import WomenPage from "../pages/WomenPage";
+import UnisexPage from "../pages/UnisexPage";
+
+const allProducts = [...menProducts, ...womenProducts, ...unisexProducts];
 
 function App() {
-  const [userType, setUserType] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showCart, setShowCart] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [modalType, setModalType] = useState(null);
-  const [showToast, setShowToast] = useState(false);
   const [cartItems, setCartItems] = useState([]);
-  const [notificationMessages, setNotificationMessages] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [cartToast, setCartToast] = useState(false);
+  const [favToast, setFavToast] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      const loggedIn = !!user;
-      setIsAuthenticated(loggedIn);
-      setNotificationMessages(loggedIn ? ["Welcome to Indomitable Boutique!"] : []);
-    });
-    return () => unsubscribe();
+    setIsAuthenticated(!!localStorage.getItem("access_token"));
   }, []);
 
-  const logout = async () => {
-    try {
-      if (cartItems.length > 0) {
-        localStorage.setItem("lastUserCart", JSON.stringify(cartItems));
-      }
-      await signOut(auth);
-      setUserType(null);
-      setCartItems([]);
-      alert("Signed out successfully");
-      navigate("/");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
-
-  const addToCart = (newProduct) => {
-    setCartItems((prev) => {
-      const existingIndex = prev.findIndex(
-        (item) => item.title === newProduct.title && item.size === newProduct.size
-      );
-      if (existingIndex !== -1) {
-        const updated = [...prev];
-        updated[existingIndex].quantity += newProduct.quantity || 1;
-        return updated;
-      } else {
-        return [...prev, { ...newProduct, quantity: newProduct.quantity || 1 }];
-      }
+  // ---------- AUTH ----------
+  const loginUser = async (email, password) => {
+    const res = await fetch("http://127.0.0.1:8000/api/token/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: email, password }),
     });
-
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+    if (!res.ok) throw new Error("Login failed");
+    const data = await res.json();
+    localStorage.setItem("access_token", data.access);
+    localStorage.setItem("refresh_token", data.refresh);
+    setIsAuthenticated(true);
+    setShowAuthModal(false);
+    return data;
   };
 
-  const removeFromCart = (indexToRemove) => {
-    setCartItems((prev) => prev.filter((_, i) => i !== indexToRemove));
+  const signupUser = async (email, password) => {
+    const res = await fetch("http://127.0.0.1:8000/api/register/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: email, password }),
+    });
+    if (!res.ok) throw new Error("Signup failed");
+    return loginUser(email, password);
+  };
+
+  const logout = () => {
+    localStorage.clear();
+    setIsAuthenticated(false);
+    setCartItems([]);
+    setFavorites([]);
+    navigate("/");
+  };
+
+  // ---------- CART ----------
+  const addToCart = (product) => {
+    setCartItems((prev) => {
+      const index = prev.findIndex(
+        (i) => i.title === product.title && i.size === product.size
+      );
+      if (index !== -1) {
+        const updated = [...prev];
+        updated[index].quantity += product.quantity || 1;
+        return updated;
+      }
+      return [...prev, { ...product, quantity: product.quantity || 1 }];
+    });
+    setCartToast(true);
+    setTimeout(() => setCartToast(false), 2500);
+  };
+
+  const removeFromCart = (index) => {
+    setCartItems((prev) => prev.filter((_, i) => i !== index));
   };
 
   const updateCartQuantity = (index, delta) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item, i) =>
-        i === index ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
+    setCartItems((prev) =>
+      prev.map((item, i) =>
+        i === index
+          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+          : item
       )
     );
   };
 
-  const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-  const menProducts = [
-    { image: "/mkuru.webp", title: "Slim Fit Shirt", price: 1500 },
-    { image: "/v9jeans.jpg", title: "Denim Jacket", price: 2500 },
-  ];
-
-  const womenProducts = [
-    { image: "/Beanie.webp", title: "Beanie Hat Black", price: 2000 },
-    { image: "/BucketHatSize.webp", title: "Bucket Hat Black", price: 1700 },
-  ];
-
-  const unisexProducts = [
-    { image: "/Beanie.webp", title: "Oversized Hoodie", price: 2000 },
-    { image: "/BucketHatSize.webp", title: "Joggers", price: 1700 },
-  ];
-
-  const allProducts = [...menProducts, ...womenProducts, ...unisexProducts];
-
-  const switchModal = (type) => {
-    setModalType(null);
-    setTimeout(() => setModalType(type), 150);
-  };
-
-  const getCurrentModalProps = () => {
-    switch (modalType) {
-      case "men":
-        return {
-          title: "Men's Collection",
-          products: menProducts,
-          onSwitchToWomen: () => switchModal("women"),
-          onSwitchToUnisex: () => switchModal("unisex"),
-        };
-      case "women":
-        return {
-          title: "Women's Collection",
-          products: womenProducts,
-          onSwitchToMen: () => switchModal("men"),
-          onSwitchToUnisex: () => switchModal("unisex"),
-        };
-      case "unisex":
-        return {
-          title: "Unisex Collection",
-          products: unisexProducts,
-          onSwitchToMen: () => switchModal("men"),
-          onSwitchToWomen: () => switchModal("women"),
-        };
-      default:
-        return null;
-    }
-  };
-
   const handleCheckout = () => {
     if (!isAuthenticated) {
-      alert("Please sign in to proceed to Checkout.");
+      alert("Please sign in to checkout your items.");
       setShowAuthModal(true);
       return;
     }
-
     if (cartItems.length === 0) {
       alert("Your cart is empty.");
       return;
     }
-
     navigate("/checkoutpage", { state: { cartItems } });
   };
 
-  const currentModalProps = getCurrentModalProps();
+  // ---------- FAVORITES ----------
+  const addToFavorites = (product) => {
+    if (!isAuthenticated) {
+      alert("Please sign in to add to favorites.");
+      setShowAuthModal(true);
+      return;
+    }
+    setFavorites((prev) => {
+      const exists = prev.find((item) => item.id === product.id);
+      if (exists) return prev;
+      return [...prev, product];
+    });
+    setFavToast(true);
+    setTimeout(() => setFavToast(false), 2500);
+  };
+
+  const removeFromFavorites = (id) => {
+    setFavorites((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  // ---------- BUY NOW ----------
+  const handleBuyNow = (product) => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    navigate("/checkoutpage", { state: { cartItems: [product], fromBuyNow: true } });
+  };
+
+  const totalCartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
+  const totalFavCount = favorites.length;
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="absolute inset-0 scale-110 bg-center bg-no-repeat bg-cover blur-sm" style={{ backgroundImage: "url('/AdobeStock.jpg')" }}/>
-        <Navbar onOpenAuth={() => setShowAuthModal(true)} onOpenCart={() => setShowCart(true)} onOpenUnisex={() => setModalType("unisex")} onOpenMen={() => setModalType("men")}
-          onOpenWomen={() => setModalType("women")} onOpenNotifications={() => setShowNotifications(true)} cartItemCount={totalCartCount} onCheckout={handleCheckout}
-          isAuthenticated={isAuthenticated} onLogout={logout} products={allProducts} onAddToCart={addToCart} cartItems={cartItems}/>
+    <div className="relative min-h-screen">
+      <Navbar
+        onOpenAuth={() => setShowAuthModal(true)}
+        onOpenCart={() => setShowCart(true)}
+        onCheckout={handleCheckout}
+        cartItemCount={totalCartCount}
+        favoriteItemCount={totalFavCount}
+        favoriteItems={favorites}
+        onAddToCart={addToCart}
+        onBuyNow={handleBuyNow}
+        onRemoveFavorite={removeFromFavorites}
+        isAuthenticated={isAuthenticated}
+        onLogout={logout}
+        products={allProducts}
+      />
 
-        {showAuthModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <Auth onClose={() => setShowAuthModal(false)} setUserType={setUserType} />
-          </div>
-        )}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <Auth
+            onClose={() => setShowAuthModal(false)}
+            loginUser={loginUser}
+            signupUser={signupUser}
+          />
+        </div>
+      )}
 
-        {showCart && (
-          <Cart onClose={() => setShowCart(false)} cartItems={cartItems} onRemoveItem={removeFromCart} onUpdateQuantity={updateCartQuantity}
-            isAuthenticated={isAuthenticated} onShowAuthModal={() => setShowAuthModal(true)}/>
-        )}
+      {showCart && (
+        <Cart
+          onClose={() => setShowCart(false)}
+          cartItems={cartItems}
+          onRemoveItem={removeFromCart}
+          onUpdateQuantity={updateCartQuantity}
+          isAuthenticated={isAuthenticated}
+          onShowAuthModal={() => setShowAuthModal(true)}
+        />
+      )}
 
-        {/* {showNotifications && (
-          <Notifications onClose={() => setShowNotifications(false)} isAuthenticated={isAuthenticated} messages={notificationMessages}/>
-        )} */}
+      {showFavorites && (
+        <Favorite
+          open={showFavorites}
+          onClose={() => setShowFavorites(false)}
+          favoriteItems={favorites}
+          onAddToCart={addToCart}
+          onBuyNow={handleBuyNow}
+          onRemoveFavorite={removeFromFavorites}
+        />
+      )}
 
-        {currentModalProps && (
-          <GenericModal {...currentModalProps} onClose={() => setModalType(null)} onAddToCart={addToCart} isAuthenticated={isAuthenticated} onShowAuthModal={() => setShowAuthModal(true)}/>
-        )}
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/men"
+          element={
+            <MenPage
+              onAddToCart={addToCart}
+              onAddToFavorites={addToFavorites}
+              isAuthenticated={isAuthenticated}
+              setShowAuthModal={setShowAuthModal}
+            />
+          }
+        />
+        <Route
+          path="/women"
+          element={
+            <WomenPage
+              onAddToCart={addToCart}
+              onAddToFavorites={addToFavorites}
+              isAuthenticated={isAuthenticated}
+              setShowAuthModal={setShowAuthModal}
+            />
+          }
+        />
+        <Route
+          path="/unisex"
+          element={
+            <UnisexPage
+              onAddToCart={addToCart}
+              onAddToFavorites={addToFavorites}
+              isAuthenticated={isAuthenticated}
+              setShowAuthModal={setShowAuthModal}
+            />
+          }
+        />
+        <Route
+          path="/:section/:category"
+          element={
+            <CategoryFilterPage
+              products={allProducts}
+              favorites={favorites}
+              onAddToFavorites={addToFavorites}
+              onAddToCart={addToCart}
+              onBuyNow={handleBuyNow}
+            />
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            <ProductPage
+              onAddToCart={addToCart}
+              onAddToFavorites={addToFavorites}
+              favorites={favorites}
+              isAuthenticated={isAuthenticated}
+              onOpenAuth={() => setShowAuthModal(true)}
+            />
+          }
+        />
+        <Route path="/checkoutpage" element={<CheckoutPage cartItems={cartItems} />} />
+        <Route path="/AboutPage" element={<AboutPage />} />
+      </Routes>
 
-        <Routes>
-          <Route path="/" element={<HomePage onOpenUnisex={() => setModalType("unisex")} />} />
-          <Route path="/checkoutpage" element={<CheckoutPage cartItems={cartItems} />} />
-        </Routes>
+      {cartToast && (
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded z-50">
+          Added to cart!
+        </div>
+      )}
+      {favToast && (
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-pink-600 text-white px-4 py-2 rounded z-50">
+          Added to favorites!
+        </div>
+      )}
 
-        {showToast && (
-          <div className="fixed bottom-12 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded bg-green-600 text-white shadow-md text-sm z-50">
-            Added to cart successfully!
-          </div>
-        )}
-
-        <Footer />
+      <Footer />
     </div>
   );
 }

@@ -1,533 +1,100 @@
-import React,{ useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaInstagram, FaFacebook, FaTiktok, FaEnvelope, FaPhone, FaCreditCard } from "react-icons/fa";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import React from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, ShoppingBag } from "lucide-react";
 
-const products = [
-  { img:"/barcelona.webp", name: "Men's Timberland Classic Premium", price: 4499 },
-  { img:"/woolen.jpg", name: "Women's Elegant Leather Boots", price: 5299 },
-  { img:"/air.webp", name: "Unisex Hoodie Collection", price: 2499 },
-  { img:"/boxers.webp", name: "Footwear - Casual Sneakers", price: 3499 },
-];
-
-function HomePage(){
-  const [visible, setVisible] = useState(false);
-  const [quantities, setQuantities] = useState({});
-  const [selectedSizes, setSelectedSizes] = useState({});
-  const [previewImage, setPreviewImage] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    setTimeout(() => setVisible(true), 10);
-  }, []);
-
-  const handleClose = (callback) => {
-    setVisible(false);
-    setTimeout(() => {
-      if (callback) callback();
-    }, 200);
-  };
-
-  const handleQuantityChange = (index, delta) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [index]: Math.max(0, (prev[index] || 0) + delta),
-    }));
-  };
-
-  const handleSizeChange = (index, size) => {
-    setSelectedSizes((prev) => ({
-      ...prev,
-      [index]: size,
-    }));
-  };
-
-  const handleShare = async (product) => {
-    const shareData = {
-      title: product.title,
-      text: `Check out this item: ${product.title}`,
-      url: window.location.href,
-    };
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(`${product.title} - ${window.location.href}`);
-        alert("Link copied to clipboard!");
-      }
-    } catch (err) {
-      alert("Unable to share.");
-    }
-  };
-  const products = [
-  {
-    id: 1,
-    name: "Yarission Men Vests cotton(3pcs)",
-    image: "/yarission1.jpg",
-    discount: "-70%",
-    oldPrice: "1000.00",
-    price: "Ksh 1,480.00",
-    reviews: 1,
-  },
-  {
-    id: 2,
-    name: "Body Soft Bathing Scrubber",
-    image: "/images/scrubber.jpg",
-    discount: "-60%",
-    oldPrice: "Ksh 150.00",
-    price: "Ksh 60.00",
-    reviews: 1,
-  },
-  {
-    id: 3,
-    name: "V9 Jeans for Men",
-    image: "/v9jeans.jpg",
-    discount: "-46%",
-    oldPrice: "Ksh 920.00",
-    price: "Ksh 499.00",
-    reviews: 3,
-  },
-  {
-    id: 4,
-    name: "Nike Airforce White",
-    image: "/Nike-Airforce.jpg",
-    discount: "-54%",
-    oldPrice: "Ksh 2,849.00",
-    price: "Ksh 1,299.00",
-    reviews: 3,
-  },
-  {
-    id: 5,
-    name: "Nike Air Force 1 (White)",
-    image: "/images/airforce.jpg",
-    discount: "-36%",
-    oldPrice: "Ksh 3,750.00",
-    price: "Ksh 2,399.00",
-    reviews: 2,
-  },
-  {
-    id: 6,
-    name: "Fashionable Beach Sandals",
-    image: "/images/sandals.jpg",
-    discount: "-41%",
-    oldPrice: "Ksh 1,650.00",
-    price: "Ksh 979.00",
-    reviews: 1,
-  },
-  {
-    id: 1,
-    name: "Men’s Loafers Rubber Shoes",
-    image: "/images/shoe1.jpg",
-    discount: "-70%",
-    oldPrice: "Ksh 4,990.00",
-    price: "Ksh 1,480.00",
-    reviews: 1,
-  },
-  {
-    id: 2,
-    name: "Body Soft Bathing Scrubber",
-    image: "/images/scrubber.jpg",
-    discount: "-60%",
-    oldPrice: "Ksh 150.00",
-    price: "Ksh 60.00",
-    reviews: 1,
-  },
-  {
-    id: 3,
-    name: "VICTAN White Standard Men’s",
-    image: "/images/tissue.jpg",
-    discount: "-46%",
-    oldPrice: "Ksh 920.00",
-    price: "Ksh 499.00",
-    reviews: 3,
-  },
-  {
-    id: 6,
-    name: "Fashionable Beach Sandals",
-    image: "/images/sandals.jpg",
-    discount: "-41%",
-    oldPrice: "Ksh 1,650.00",
-    price: "Ksh 979.00",
-    reviews: 1,
-  },
-  {
-    id: 1,
-    name: "Men’s Loafers Rubber Shoes",
-    image: "/images/shoe1.jpg",
-    discount: "-70%",
-    oldPrice: "Ksh 4,990.00",
-    price: "Ksh 1,480.00",
-    reviews: 1,
-  },
-  {
-    id: 2,
-    name: "Body Soft Bathing Scrubber",
-    image: "/images/scrubber.jpg",
-    discount: "-60%",
-    oldPrice: "Ksh 150.00",
-    price: "Ksh 60.00",
-    reviews: 1,
-  },
-  {
-    id: 3,
-    name: "VICTAN White Standard Men’s",
-    image: "/images/tissue.jpg",
-    discount: "-46%",
-    oldPrice: "Ksh 920.00",
-    price: "Ksh 499.00",
-    reviews: 3,
-  },
-  {
-    id: 3,
-    name: "VICTAN White Standard Men’s",
-    image: "/images/tissue.jpg",
-    discount: "-46%",
-    oldPrice: "Ksh 920.00",
-    price: "Ksh 499.00",
-    reviews: 3,
-  },
-  {
-    id: 6,
-    name: "Fashionable Beach Sandals",
-    image: "/images/sandals.jpg",
-    discount: "-41%",
-    oldPrice: "Ksh 1,650.00",
-    price: "Ksh 979.00",
-    reviews: 1,
-  },
-  {
-    id: 1,
-    name: "Men’s Loafers Rubber Shoes",
-    image: "/images/shoe1.jpg",
-    discount: "-70%",
-    oldPrice: "Ksh 4,990.00",
-    price: "Ksh 1,480.00",
-    reviews: 1,
-  },
-  {
-    id: 2,
-    name: "Body Soft Bathing Scrubber",
-    image: "/images/scrubber.jpg",
-    discount: "-60%",
-    oldPrice: "Ksh 150.00",
-    price: "Ksh 60.00",
-    reviews: 1,
-  },
-  {
-    id: 3,
-    name: "VICTAN White Standard Men’s",
-    image: "/images/tissue.jpg",
-    discount: "-46%",
-    oldPrice: "Ksh 920.00",
-    price: "Ksh 499.00",
-    reviews: 3,
-  },
-];
-
-const ProductCard = ({ product }) => (
-  <div className="border border-white/10 hover:border-teal-600/40 transition w-full max-w-xl rounded-md p-3 bg-white hover:shadow-md transition">
-    <div className="relative">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full text-black h-90 object-contain"
-      />
-
-      <span className="absolute top-2 left-2 bg-teal-400 text-black text-xs px-2 py-1 rounded-full">
-        {product.discount}
-      </span>
-    </div>
-
-    <div className="flex items-center gap-1 mt-2 text-yellow-400 text-sm">
-      {"★★★★★"}
-    </div>
-
-    <p className="text-xs text-gray-500">
-      {product.reviews} review{product.reviews > 1 && "s"}
-    </p>
-
-    <h3 className="text-sm font-medium mt-1 line-clamp-2">
-      {product.name}
-    </h3>
-
-    <div className="mt-1">
-      <span className="text-gray-400 line-through text-xs">
-        {product.oldPrice}
-      </span>
-      <p className="text-black font-semibold">
-        {product.price}
-      </p>
-    </div>
-  </div>
-);
-
+function HomePage() {
   return (
-    <>
-     <main className="min-h-screen text-white">
-      <section className="relative px-6 md:px-16 mb-1 py-44">
-        <div className="justify-center text-center items-center max-w-5xl mx-auto">
-          {/* <div className="w-74 h-74 lg:w-114 lg:h-114 bg-teal-400 rounded-full border-2 border-orange-400 overflow-hidden">
-            <img src="/shopping-bag.png" alt="Profile" className="w-full h-full object-cover"/>
-          </div> */}
-          <span className="text-teal-400 text-sm tracking-widest uppercase">
-            Indomitable <span className="text-white">APPAREL</span>
-          </span>
-          <h1 className="lg:text-5xl text-3xl font-black tracking-tight lg:my-5 my-2">
-            A <span className="text-teal-400">detail-focused</span> clothing apparrel to fit your <span className="text-teal-400">style</span>
-          </h1>
-          <p className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed">
-            Step into discovering your style with us
-          </p>
-          <p className="g:text-5xl text-xl font-medium lg:my-5 my-2y">
-            "Fashion that speaks"
-          </p>
-        </div>
-      </section>
-           <section className="text-white py-8 px-6">
-  <div className="max-w-7xl mx-auto">
-    <h2 className="text-3xl md:text-4xl text-center font-black tracking-tight mb-8">
-      What we <span className="text-teal-400">Sell</span>
-    </h2>
-
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {products.map((product, index) => (
-        <div
-          key={`${product.id}-${index}`}
-          className="bg-white border rounded-xl shadow p-4 flex flex-col relative"
+    <div className="bg-white text-black font-sans selection:bg-black selection:text-white">
+      {/* 1. EDITORIAL HERO SECTION */}
+      <section className="relative h-screen w-full overflow-hidden bg-[#f5f5f5]">
+        <motion.div 
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute inset-0"
         >
-          {/* Image Container */}
-          <div className="relative">
-            <img
-              src={product.image}
-              alt={product.name}
-              onClick={() =>
-                setPreviewImage(previewImage === index ? null : index)
-              }
-              className="w-full h-48 object-cover rounded-md mb-2 hover:scale-105 transition-transform duration-300 cursor-pointer"
-            />
-
-            {/* Hovering Preview */}
-            {previewImage === index && (
-              <img
-                src={product.image}
-                alt="Preview"
-                className="absolute -top-6 left-1/2 transform -translate-x-1/2 scale-130 z-50 rounded-lg shadow-lg border-4 border-white transition-all duration-200 cursor-pointer"
-                onClick={() => setPreviewImage(null)}
-              />
-            )}
-          </div>
-
-          <div className="flex justify-between items-center mb-1">
-            <h3 className="text-black/50 text-lg font-medium">
-              {product.name}
-            </h3>
-          </div>
-
-          <p className="text-black/50 mb-2">KES {product.price}</p>
+          <img 
+            src="/Flannels.jpg" 
+            alt="Hero Lifestyle"
+            className="w-full h-full object-cover object-[50%_30%]"
+          />
+        </motion.div>
+        
+        <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-20 bg-gradient-to-t from-black/40 via-transparent to-transparent">
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="max-w-4xl"
+          >
+            <p className="text-white text-sm font-bold uppercase tracking-[0.3em] mb-4">New Season / {new Date().getFullYear()}</p>
+            <h1 className="text-white text-6xl md:text-9xl font-black uppercase italic tracking-tighter leading-[0.85] mb-8">
+              UNYIELDING <br /> STYLE.
+            </h1>
+            <button className="group flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full font-bold uppercase text-sm hover:bg-black hover:text-white transition-all duration-300">
+              Shop the Collection
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </motion.div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </section>
 
+      {/* 2. THE EDITORIAL "FOCUS" GRID */}
+      <section className="px-6 md:px-12 py-24">
+        <div className="flex justify-between items-end mb-12">
+          <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">The Essentials</h2>
+          <span className="text-sm font-bold underline cursor-pointer hover:text-gray-500">View All</span>
+        </div>
 
-
-      <section className="relative px-6 md:px-16 py-24">
-        <h2 className="text-center text-3xl text-black/80 font-black tracking-tight mb-24">
-          <span className="text-teal-400">Learn More </span> About Us
-        </h2>
-
-        <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-          <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4">
-            <div className="w-74 h-74 lg:w-114 lg:h-114 rounded-full border-2 border-teal-400 overflow-hidden">
-              <img src="/shopping-bag.png" alt="Profile" className="w-full h-full object-cover"/>
-            </div>
-
-            <h3 className="text-white text-xl text-center font-medium text-foreground/90 text-md leading-relaxed">Indomitable Boutique</h3>
-              
-            <div className="flex gap-4 text-xl text-primary">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer">
-              <FaInstagram className="w-6 h-6 hover:text-teal-400 transition" />
-              </a>
-              <a href="https://facebook.com" target="_blank" rel="noreferrer">
-              <FaFacebook className="w-6 h-6 hover:text-teal-400 transition" />
-              </a>
-              <a href="https://tiktok.com/@benais6">
-              <FaTiktok className="w-6 h-6 hover:text-teal-400 transition" />
-              </a>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Main Focus Card */}
+          <div className="relative group overflow-hidden bg-gray-100 aspect-[4/5] md:aspect-auto md:h-[800px]">
+            <img src="/Flannels.jpg" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Focus" />
+            <div className="absolute bottom-10 left-10 text-white">
+              <h3 className="text-4xl font-black uppercase italic italic mb-2">Streetwear Noir</h3>
+              <p className="underline font-bold text-sm cursor-pointer">Explore Series</p>
             </div>
           </div>
 
-          <div className="bg-gradient-to-l from-black/50 to-black/30 border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
-            <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
-              YEARS OF WORK
-            </span>
-
-            <h3 className="lg:text-3xl text-3xl font-black tracking-tight lg:my-5 my-2">
-              5+ Years of Craft & Growth
-            </h3>
-
-            <p className="text-sm tracking-widest text-gray-400 mt-1">
-              Your Trusted Clothing Apparel 
-            </p>
-            <p className="text-sm text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              Since 2021
-            </p>
-
-            <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              THE CHALLENGE
-            </h4>
-            <p className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-3">
-              Turning ideas into apparel people actually live in—not just wear once.
-            </p>
-
-            <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              Work Done in 5yrs
-            </h4>
-            <ul className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              <li>• 0ur brand has been steadily building—not chasing hype, but earning trust</li>
-              <li>• We’ve refined our craft, studied our community, and evolved with culture instead of copying it.</li>
-              <li>• Applied real feedback from our customers to better our services</li>
-            </ul>
-
-            <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-3">
-              Results
-            </h4>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">80%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Brand Consistency</p>
-              </div>
-              <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">20%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Continous Evolution</p>
-              </div>
+          <div className="grid grid-cols-1 gap-4">
+            <div className="bg-gray-100 p-12 flex flex-col justify-center items-start space-y-6">
+              <span className="text-xs font-black uppercase tracking-widest text-gray-400">Featured Capsule</span>
+              <h3 className="text-4xl font-bold tracking-tighter">Monochrome Athletics</h3>
+              <p className="text-gray-600 max-w-sm">Engineered for the modern minimalist. Performance meets high-fashion tailoring.</p>
+              <button className="bg-black text-white px-6 py-2 rounded-full text-sm font-bold">Shop Now</button>
             </div>
-
-            <div className="flex flex-wrap gap-2">
-              {[ "Open to feedback", "Transparent", "Honest", "+5 years experience" ].map((tech) => (
-                <span
-                  key={tech}
-                  className="px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-black/50 to-black/30 border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
-            <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
-              EXPERIENCE
-            </span>
-
-            <h3 className="lg:text-3xl text-3xl font-black tracking-tight lg:my-5 my-2">
-              INDOMITABLE BOUTIQUE
-            </h3>
-
-            <p className="text-sm tracking-widest text-gray-400 mt-1">
-              Crafted Apparel & Design Expertise
-            </p>
-            <p className="text-sm text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              Refined Over 5+ Years
-            </p>
-
-            <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              The Challenge
-            </h4>
-            <p className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-3">
-              Perfecting fit, fabric, and design in a space where trends change fast but quality is often ignored.
-            </p>
-
-            <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              What We Did
-            </h4>
-            <ul className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              <li>• Learnt how to be the best</li>
-              <li>• Created a friendly and mutual relation with our customers</li>
-              <li>• Reliable customer Services</li>
-            </ul>
-
-            <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-3">
-              Results
-            </h4>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">70%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Material & Fit Mastery</p>
-              </div>
-              <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">30%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Design Innovation</p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {["Design", "Fit", "Refined", "Mutual"].map((tech) => (
-                <span
-                  key={tech}
-                  className="px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-l from-black/50 to-black/30 border border-white/10 hover:border-teal-400/40 transition rounded-2xl p-6 w-full max-w-xl">
-            <span className="inline-block mb-4 px-3 py-1 text-xs rounded-full bg-white/5 text-gray-300">
-              MISSION
-            </span>
-
-            <h3 className="lg:text-3xl text-3xl font-black tracking-tight lg:my-5 my-2">
-              More Than Just Fashion
-            </h3>
-            <p className="text-sm tracking-widest text-gray-400 mt-1">
-              Purpose-Driven Clothing Apparel
-            </p>
-            <p className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-               Our mission is simple: create clothing that feels authentic, looks effortless, and holds meaning beyond trends. For people who move with purpose—those who want to express confidence, 
-               identity, and individuality without trying too hard. We’re here to make apparel 
-               that speaks quietly but carries weight.
-            </p>
-
-            <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-              Attributes
-            </h4>
-            <ul className="text-gray-300 text-lg font-medium text-foreground/90 text-md leading-relaxed mb-2">
-              <li>• Quality First</li>
-              <li>• Authenticity</li>
-              <li>• Self-Expression</li>
-            </ul>
-
-            <h4 className="text-sm uppercase tracking-widest text-gray-400 mb-3">
-              Results
-            </h4>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">60%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Community & Identity</p>
-              </div>
-              <div className="border border-teal-400 rounded-xl p-4 text-center">
-                <p className="text-teal-400 text-xl font-semibold">40%</p>
-                <p className="text-gray-300 text-md font-medium text-foreground/90 text-md leading-relaxed mb-2">Creative Expression</p>
-              </div>
+            <div className="relative overflow-hidden aspect-square md:aspect-auto">
+                <img src="/Flannels.jpg" className="w-full h-full object-cover" alt="Sub Focus" />
             </div>
           </div>
         </div>
       </section>
-    </main>
-      {/* {previewImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setPreviewImage(null)}>
-          <img src={previewImage} alt="Preview" className="max-w-full max-h-full rounded-lg shadow-lg border border-white"/>
-        </div>
-      )} */}
-    </>
+
+      {/* 3. PRODUCT FEED (THE "NIKE" LOOK) */}
+      <section className="bg-[#f5f5f5] py-24 px-6 md:px-12">
+         <div className="max-w-7xl mx-auto">
+            <h2 className="text-2xl font-bold mb-10">Trending Now</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="group cursor-pointer">
+                        <div className="aspect-[3/4] bg-white overflow-hidden relative">
+                             <img src={`https://images.unsplash.com{i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Product" />
+                             <button className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity bg-white p-3 rounded-full shadow-lg">
+                                <ShoppingBag size={18} />
+                             </button>
+                        </div>
+                        <div className="mt-4 space-y-1">
+                            <h4 className="font-bold text-sm uppercase">Indomitable Pro Tee</h4>
+                            <p className="text-gray-500 text-sm italic font-medium tracking-tight">Activewear / Black</p>
+                            <p className="font-bold">$85.00</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+         </div>
+      </section>
+    </div>
   );
-}
+};
 
 export default HomePage;
